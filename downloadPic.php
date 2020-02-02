@@ -39,7 +39,6 @@ function downloadPic($realPageUrl)
 			"type"	=>	"bmp",
 		];
 	}
-	
-	throw new Exception("not know type about {$picUrl}");
+
 	
 }

@@ -19,25 +19,37 @@ mkdir($fileName);
 
 $picCount = 0;
 $pageNum = 0;
+
+echo "start spider\n";
 while(true){
 	if($pageNum==0){
 		foreach($picList as $pic){
 			$data = downloadPic($pic);
+			if(empty($data)){
+				echo "the picture of {$picCount} get failed\n";
+				$picCount++;
+				continue;
+			}
 			file_put_contents("{$fileName}/".$picCount++.".".$data['type'], $data['data']);
 		}
 		if(count($pageUrl) == 0){
 			break;
 		}
+		$pageNum++;
+		echo "page 1 finish\n";
 	}else{
-		if($pageNum >= count($pageUrl)){
+		if($pageNum > count($pageUrl)){
 			break;
 		}
-		$nextPageHtml = geturl($pageUrl[$pageNum++]);
+		$pageNotice = $pageNum + 1;
+		$nextPageHtml = geturl($pageUrl[$pageNum-1]);
 		$nextPageList = getPageImageInnerPageUrl($nextPageHtml);
 		foreach($nextPageList as $pic){
 			$data = downloadPic($pic);
 			file_put_contents("{$fileName}/".$picCount++.".".$data['type'], $data['data']);
 		}
+		$pageNum++;
+		echo "page {$pageNotice} finish\n";
 	}
 	
 }
